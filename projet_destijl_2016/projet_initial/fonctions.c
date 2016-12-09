@@ -125,11 +125,30 @@ void deplacer(void *arg) {
     int gauche;
     int droite;
     DMessage *message;
+    
+    int compteurmessage;
 
     rt_printf("tmove : Debut de l'éxecution de periodique à 1s\n");
     rt_task_set_periodic(NULL, TM_NOW, 1000000000);
 
     while (1) {
+        if(compteurmessage>3){
+            rt_printf("Connexion lost due to too many lost messages");
+            message = d_new_message();
+            rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+            etatCommRobot=STATUS_ERR_TIMEOUT;
+            /* On declare l'état du robot comme connexion perdue */
+            rt_mutex_release(&mutexEtat);
+            message->put_state(message, STATUS_ERR_TIMEOUT);
+            if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
+                    message->free(message);
+            }
+            else{
+            	rt_printf("Message of disconnexion not sent");
+            	break;
+            }
+            break;
+        }
         /* Attente de l'activation périodique */
         rt_task_wait_period(NULL);
         rt_printf("tmove : Activation périodique\n");
@@ -173,15 +192,23 @@ void deplacer(void *arg) {
 
                 message = d_new_message();
                 message->put_state(message, status);
+                
+                compteurmessage++;
+                rt_printf("Message lost ! %d messages lost", compteurmessage);
 
                 rt_printf("tmove : Envoi message\n");
                 if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
                     message->free(message);
                 }
+                else{
+                    rt_printf("Sending error message lost !);
+                }
             }
+            else{ compteurmessage=0;} //Message reçue donc remise à zéro du compteur de messages perdus
         }
     }
 }
+
 
 int write_in_queue(RT_QUEUE *msgQueue, void * data, int size) {
     void *msg;
