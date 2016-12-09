@@ -5,3 +5,12 @@ fonction.h
   mise en place de la condition si compteur>3 alors on envoie:
     - message avec STATUT_ERR_TIMEOUT au superviseur
     - changement de la variable etatCommRobot
+    
+fonction.c 
+-->communiquer
+  ajout de la gestion de la perte de la connection. Si la reception est perdue au niveau 
+  de la reception de message on stipule que celle ci est perdue et on se reconnecte. 
+    - changement de la variable etatCommMoniteur. Mise à 1 -> connection perdu 
+                                                  Mise à 0 -> connection établis 
+    - problème à la recpetion si la taille de la donnée recu est <0. Cette taille est stockée dans 
+      la variable var. Lors de la reconnection var est remis à 1 pour rerentrer dans le while.
