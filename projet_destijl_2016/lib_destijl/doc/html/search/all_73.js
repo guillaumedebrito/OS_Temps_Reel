@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['send',['send',['../struct_d_server.html#aaf1e8495273487cd100790576c4966b2',1,'DServer']]],
+  ['sensor_5fempty',['SENSOR_EMPTY',['../dconstantes_8h.html#a49761e2e78fa58b68c51a9d17939d3b6',1,'dconstantes.h']]],
+  ['sensor_5ffull',['SENSOR_FULL',['../dconstantes_8h.html#a00702dadac7775013d6574995ed94aa3',1,'dconstantes.h']]],
+  ['set',['set',['../struct_d_arena.html#a3b34db6b2f251881ee3e55e1c96a5eea',1,'DArena::set()'],['../struct_d_message.html#aeb888f8d85c11678559d03005e798eca',1,'DMessage::set()'],['../struct_d_movement.html#a3ed0221cbbae19a861b82bf9ba2862c8',1,'DMovement::set()'],['../struct_d_position.html#a7bedfdd409e46af0bca302b3ea16a7b1',1,'DPosition::set()']]],
+  ['set_5fipl',['set_ipl',['../struct_d_image.html#adce498befae8cd8dc4670098a26db8f7',1,'DImage']]],
+  ['set_5flevel',['set_level',['../struct_d_battery.html#a166c13bde199aa503585e21fe9d2e6f9',1,'DBattery']]],
+  ['set_5fmotors',['set_motors',['../struct_d_robot.html#a19d45d0664cf4f17b09b47064f3a9fc4',1,'DRobot']]],
+  ['set_5forder',['set_order',['../struct_d_action.html#a882450f0f18e10ad59112a50ec3a33f4',1,'DAction']]],
+  ['socketid',['socketID',['../struct_d_server.html#ac50a20bd04e31b7b00c7f7c744a0c67b',1,'DServer']]],
+  ['speed',['speed',['../struct_d_movement.html#a218b4f7c6cc2681a99c23a3b089d68b1',1,'DMovement']]],
+  ['start',['start',['../struct_d_robot.html#a75f9f48d7e4433671ffc91e648a4a3c4',1,'DRobot']]],
+  ['start_5finsecurely',['start_insecurely',['../struct_d_robot.html#afbb95101ade4de2f856ab6d518d4c5a7',1,'DRobot']]],
+  ['status',['status',['../struct_d_robot.html#a60286dc5da1de5748677e9dc25f9c631',1,'DRobot']]],
+  ['status_5ferr_5fchecksum',['STATUS_ERR_CHECKSUM',['../dconstantes_8h.html#a3658b6713422dc261c11dfc7b7d335fc',1,'dconstantes.h']]],
+  ['status_5ferr_5finvalid_5fparams',['STATUS_ERR_INVALID_PARAMS',['../dconstantes_8h.html#a838a5559cd25a02d80f11c94cad1e36d',1,'dconstantes.h']]],
+  ['status_5ferr_5fno_5ffile',['STATUS_ERR_NO_FILE',['../dconstantes_8h.html#aa0201657b883c06dbc8d6bd872a9b24f',1,'dconstantes.h']]],
+  ['status_5ferr_5fselect',['STATUS_ERR_SELECT',['../dconstantes_8h.html#a03214ee7a0a1b1ce7981319870a5e259',1,'dconstantes.h']]],
+  ['status_5ferr_5ftimeout',['STATUS_ERR_TIMEOUT',['../dconstantes_8h.html#a13f7940d7133c0fe93dd4a0ba0812883',1,'dconstantes.h']]],
+  ['status_5ferr_5funknown',['STATUS_ERR_UNKNOWN',['../dconstantes_8h.html#aa05e4f65d9cde6279929980a6adad7fd',1,'dconstantes.h']]],
+  ['status_5ferr_5funknown_5fcmd',['STATUS_ERR_UNKNOWN_CMD',['../dconstantes_8h.html#a527dd93f390f589fe46f2136695a81ab',1,'dconstantes.h']]],
+  ['status_5ferr_5fwdt_5fexpired',['STATUS_ERR_WDT_EXPIRED',['../dconstantes_8h.html#aabbc946fb97a4d1219d8a4bbe30ffe1e',1,'dconstantes.h']]],
+  ['status_5fok',['STATUS_OK',['../dconstantes_8h.html#a2403320c41f08e7567cb169de5db66b3',1,'dconstantes.h']]],
+  ['stop',['stop',['../struct_d_robot.html#a8d55cba45bb5617986cee9c812a02bbe',1,'DRobot']]]
+];

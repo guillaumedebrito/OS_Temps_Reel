@@ -1,0 +1,14 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=/usr/lib/x86_64-linux-gnu
+includedir=${prefix}/include
+
+Name: libavcodec
+Description: Libav codec library
+Version: 53.35.0
+Requires: 
+Requires.private: libavutil = 51.22.1
+Conflicts:
+Libs: -L${libdir} -lavcodec 
+Libs.private: -ldl -lX11 -lXext -lXfixes -ljack -lasound -ldc1394 -lraw1394 -lvpx -lvpx -lvorbisenc -lvorbis -logg -ltheoraenc -ltheoradec -logg -lspeex -lschroedinger-1.0 -lgsm -lfreetype -lva -lm -pthread -lbz2 -lz
+Cflags: -I${includedir}

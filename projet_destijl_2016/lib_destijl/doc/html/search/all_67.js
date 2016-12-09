@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['get_5fangle',['get_angle',['../struct_d_arena.html#ad6bcc835e09e7a9f3a212fed513164a1',1,'DArena']]],
+  ['get_5fbox',['get_box',['../struct_d_arena.html#a8b86391b1d860966b14eab2509c9258a',1,'DArena']]],
+  ['get_5fdata',['get_data',['../struct_d_jpegimage.html#a0733320c4b23f6e60dc61413e85611b1',1,'DJpegimage::get_data()'],['../struct_d_message.html#a1e021b4e6b7ee3dc2e3b5b107f74e8ef',1,'DMessage::get_data()']]],
+  ['get_5fdirection',['get_direction',['../struct_d_movement.html#a55650cca78e632623cbd6dba48cc2e44',1,'DMovement']]],
+  ['get_5fframe',['get_frame',['../struct_d_camera.html#a77c554942d41b69951515b68a437fe25',1,'DCamera']]],
+  ['get_5fheight',['get_height',['../struct_d_arena.html#a5816021c12c3c9e3d4a999398676737a',1,'DArena']]],
+  ['get_5fid',['get_id',['../struct_d_mission.html#a22de713faee5726b0fbd54c76aebfb5d',1,'DMission']]],
+  ['get_5fipl',['get_ipl',['../struct_d_image.html#a52e246d05e9be03bfc52a12474e9d1ae',1,'DImage']]],
+  ['get_5flenght',['get_lenght',['../struct_d_message.html#ac03ba2b40e373b75f7e8c4fc13889bac',1,'DMessage']]],
+  ['get_5flevel',['get_level',['../struct_d_battery.html#a6270bed6f7402aa86d690aaa7c583571',1,'DBattery']]],
+  ['get_5fodo',['get_odo',['../struct_d_robot.html#abfdb90867e6c1fd16ac8a319bcdc7af7',1,'DRobot']]],
+  ['get_5forder',['get_order',['../struct_d_action.html#a0e9e03f27b9e8d02b93760a1eb9c2868',1,'DAction']]],
+  ['get_5forientation',['get_orientation',['../struct_d_position.html#a6e67ebe5b0ba0fa8d1357954acfd563a',1,'DPosition']]],
+  ['get_5fpayload',['get_payload',['../struct_d_message.html#a6262a95cc528bc42aaf22562a19561b0',1,'DMessage']]],
+  ['get_5fpayload_5fsize',['get_payload_size',['../struct_d_message.html#a4c77189c3a96c4778054dad95daaaf08',1,'DMessage']]],
+  ['get_5fposition',['get_position',['../struct_d_mission.html#a534c5a3c0ea066d7fd34ee179632476c',1,'DMission']]],
+  ['get_5fsensor',['get_sensor',['../struct_d_robot.html#a96e1df8e32deb8b92f1dc8451cb19890',1,'DRobot']]],
+  ['get_5fspeed',['get_speed',['../struct_d_movement.html#a4a6639d4ee3cd90033ba707613ef3fde',1,'DMovement']]],
+  ['get_5fstatus',['get_status',['../struct_d_robot.html#a9c1ce61ee08944131d8b95ba1ed26de5',1,'DRobot']]],
+  ['get_5ftype',['get_type',['../struct_d_message.html#a927a2048dc085d6aa868e3da8126af39',1,'DMessage']]],
+  ['get_5fvbat',['get_vbat',['../struct_d_robot.html#a9ac7be76b60c62be9d4374ff1c25863e',1,'DRobot']]],
+  ['get_5fversion',['get_version',['../struct_d_robot.html#a3f290aa73a2bdfb678de8e8600d15892',1,'DRobot']]],
+  ['get_5fwidth',['get_width',['../struct_d_arena.html#a030747b061749daae7ddfcd0607f047d',1,'DArena']]],
+  ['get_5fx',['get_x',['../struct_d_arena.html#a8d152a664fbd1ea78e617ee3106dd61e',1,'DArena::get_x()'],['../struct_d_position.html#adaec698f10859cbf0582bb57748d632c',1,'DPosition::get_x()']]],
+  ['get_5fy',['get_y',['../struct_d_arena.html#a49494c7bd77fc5c48e9034acb20665cf',1,'DArena::get_y()'],['../struct_d_position.html#a752ac62928f922f54bf44add6c2a9b49',1,'DPosition::get_y()']]]
+];
