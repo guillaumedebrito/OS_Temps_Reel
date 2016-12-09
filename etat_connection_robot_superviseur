@@ -1,0 +1,7 @@
+09/12
+fonction.h
+-->déplacer
+  ajout d'une variable compteurmessage pour compter le nbr de messages perdus
+  mise en place de la condition si compteur>3 alors on envoie:
+    - message avec STATUT_ERR_TIMEOUT au superviseur
+    - changement de la variable etatCommRobot
