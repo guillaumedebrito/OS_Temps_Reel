@@ -16,3 +16,4 @@ Lancer l'executable sur le shuttle :
 
 Lancer l'interface graphique : 
   java -jar Moniteur.jar
+Faire attention à mettre IP adress avec le nom du robot
