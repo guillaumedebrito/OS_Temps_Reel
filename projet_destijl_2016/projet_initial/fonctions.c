@@ -85,6 +85,20 @@ void communiquer(void *arg) {
                             rt_printf("tserver : Action connecter robot\n");
                             rt_sem_v(&semConnecterRobot);
                             break;
+                            //########################## THOMAS ##############################
+                        case ACTION_FIND_ARENA :
+                            rt_printf("tserver : Action chercher l'arene\n");
+                            etatArene = ACTION_FIND_ARENA ;
+                            break;
+                        case ACTION_ARENA_FAILED :
+                            rt_printf("tserver : Action de non acceptation de l'arene\n");
+                            etatArene = ACTION_ARENA_FAILED ;
+                            break;
+                        case ACTION_ARENA_IS_FOUND :
+                            rt_printf("tserver : Action d'acceptation de l'arene\n");
+                            etatArene = ACTION_ARENA_IS_FOUND ;
+                            break;
+                            //################################################################
                     }
                     break;
                 case MESSAGE_TYPE_MOVEMENT:
