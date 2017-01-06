@@ -100,11 +100,11 @@ void communiquer(void *arg) {
                             break;
                         case ACTION_COMPUTE_CONTINUOUSLY_POSITION :
                             rt_printf("tserver : Calcul de position du robot en continue\n");
-                            rt_sem_v(&semCalculPosition);
+                            rt_sem_v(&semLaunchCalculPosition);
                             break;
                         case ACTION_STOP_COMPUTE_POSITION:
                             rt_printf("tserver : Arret du calcul de position du robot en continue\n");
-                            rt_sem_p(&semCalibration,TM_INFINITE);
+                            rt_sem_p(&semLaunchCalculPosition,TM_INFINITE);
                             break;
                             //################################################################
                     }
@@ -317,7 +317,7 @@ void camera(void *arg){
             message = d_new_message();
             d_message_put_jpeg_image(message, jpegimage);
             
-            rt_printf("Arena_calibration : Envoi de l'image de l'arene au moniteur\n");
+            rt_printf("tCamera : Envoi de l'image jpeg\n");
             if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
                 message->free(message);
             }
@@ -366,6 +366,10 @@ void calibration(void *arg){
             DMessage* message_img_arena=d_new_message();
             message_img_arena->put_jpeg_image(img_arena_jpeg);
             img_arena_jpeg->free();
+            rt_printf("Arena_calibration : Envoi de l'image de l'arene au moniteur\n");
+            if (write_in_queue(&queueMsgGUI, message_img_arena, sizeof (DMessage)) < 0) {
+                message_img_arena->free(message_img_arena);
+            }
             
             //on met l'arene en etat d'attente d'acceptation et on attend
             etatArene = ACTION_WAINTING_ARENA ;
@@ -388,13 +392,54 @@ void calculposition(void *arg){
 	rt_printf("tcalculposition : Debut de l'éxecution de periodique à 600ms\n");
     rt_task_set_periodic(NULL, TM_NOW, 600000000);
     rt_sem_v(&semCalculPosition);
+    rt_sem_p(&semLaunchCalculPosition,TM_INFINITE);
 	while(1){
 		rt_printf("Je suis dans le calcul position\n");
 		rt_task_wait_period(NULL);
         rt_printf("tcalculposition : Activation périodique\n");
-
 		//Semaphore bloquant si connexion perdue 
         rt_sem_p(&semCalculPosition,TM_INFINITE);
+        
+        //on crée un image de l'arène
+        DImage * img_arena=d_new_image();
+        cam->get_frame(img_arena);
+        
+        //calcul de la position
+        DPosition* new_position=d_new_position();
+        new_position=img_arena->compute_robot_position(arena);
+        
+        //si la position est nulle on recalcule le tout jusqu'à que ca soit bon
+        while(new_position==NULL){
+            //on rereecupere une image et on recalcul
+            cam->get_frame(img_arena);
+            new_position=img_arena->compute_robot_position(arena);
+        }
+        
+        //sinon on dessine la position du robot sur l'image
+        d_imageshop_draw_position(img_arena,new_position);
+
+        //on convertis l'image en jpeg
+        DJpegimage* img_position_jpeg=d_new_jpegimage();
+        img_position_jpeg->compress(img_arena);
+        img_arena->free();
+        
+        //on envoie l'image jpeg et la position du robot au moniteur
+        DMessage* message_img_position=d_new_message();
+        DMessage* message_position=d_new_message();
+        
+        message_img_position->put_jpeg_image(img_position_jpeg);
+        img_position_jpeg->free();
+        message_position->put_position(new_position);
+        new_position->free();
+        rt_printf("Calcul position : Envoi de l'image de l'arene au moniteur avec la position\n");
+        if (write_in_queue(&queueMsgGUI, message_img_position, sizeof (DMessage)) < 0) {
+            message_img_position->free(memessage_img_positionssage);
+        }
+        rt_printf("Calcul position : Envoi de la position du robot au moniteur\n");
+        if (write_in_queue(&queueMsgGUI, message_position, sizeof (DMessage)) < 0) {
+            message_position->free(message_position);
+        }
+        rt_sem_v(&semLaunchCalculPosition);
 
         rt_sem_v(&semCalculPosition);
 	}
