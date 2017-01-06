@@ -1,0 +1,6 @@
+cd ../lib_destijl/source; echo "entering source"; \
+	gcc -g -Wall -I../include -I../include/x86_64-linux-gnu -I../xenomai/include  -I../lib_destijl/headers  -c *.c
+entering source
+cd ..
+gcc -g -Wall -I../include -I../include/x86_64-linux-gnu -I../xenomai/include  -I../lib_destijl/headers  -c fonctions.c -o fonctions.o
+gcc -g -Wall -I../include -I../include/x86_64-linux-gnu -I../xenomai/include  -I../lib_destijl/headers -c main.c -o main.o

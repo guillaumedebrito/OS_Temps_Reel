@@ -50,7 +50,7 @@ int main(int argc, char**argv) {
     return 0;
 }
 
-void initStruct(void) {connecter
+void initStruct(void) {
     int err;
     /* Creation des mutex */
     if (err = rt_mutex_create(&mutexEtat, NULL)) {
@@ -67,6 +67,33 @@ void initStruct(void) {connecter
         rt_printf("Error semaphore create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+
+
+
+    if (err = rt_sem_create(&semDeplacerRobot, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&semWatchdog, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&semCamera, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&semCalibration, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&semCalculPosition, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+
+
+
+
 
     /* Creation des taches */
     if (err = rt_task_create(&tServeur, NULL, 0, PRIORITY_TSERVEUR, 0)) {
@@ -86,6 +113,32 @@ void initStruct(void) {connecter
         exit(EXIT_FAILURE);
     }
 
+
+
+	
+
+    if (err = rt_task_create(&twatchdog, NULL, 0, PRIORITY_TWATCHDOG, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_create(&tcamera, NULL, 0, PRIORITY_TCAMERA, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_create(&tcalibration, NULL, 0, PRIORITY_TCALIBRATION, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_create(&tcalculposition, NULL, 0, PRIORITY_TCALCULPOSITION, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+	
+
+
+
+
+
     /* Creation des files de messages */
     if (err = rt_queue_create(&queueMsgGUI, "toto", MSG_QUEUE_SIZE*sizeof(DMessage), MSG_QUEUE_SIZE, Q_FIFO)){
         rt_printf("Error msg queue create: %s\n", strerror(-err));
@@ -96,10 +149,15 @@ void initStruct(void) {connecter
     robot = d_new_robot();
     move = d_new_movement();
     serveur = d_new_server();
+
+	cam = d_new_camera();
+    image = d_new_image();
+    jpegimage = d_new_jpegimage();
 }
 
 void startTasks() {
     int err;
+
     if (err = rt_task_start(&tconnect, &connecter, NULL)) {
         rt_printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
@@ -117,10 +175,38 @@ void startTasks() {
         exit(EXIT_FAILURE);
     }
 
+
+
+
+
+
+    if (err = rt_task_start(&twatchdog, &watchdog, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&tcamera, &camera, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&tcalibration, &calibration, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&tcalculposition, &calculposition, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+
+
 }
 
 void deleteTasks() {
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
+	
+    rt_task_delete(&twatchdog);
+    rt_task_delete(&tcamera);
+    rt_task_delete(&tcalibration);
+	rt_task_delete(&tcalculposition);
 }

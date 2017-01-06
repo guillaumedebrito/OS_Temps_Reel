@@ -22,7 +22,6 @@ extern "C" {
 		void camera(void *arg);
 		void calibration(void *arg);
 		void calculposition(void *arg);
-
 #ifdef	__cplusplus
 }
 #endif

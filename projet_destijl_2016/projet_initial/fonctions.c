@@ -66,6 +66,9 @@ void communiquer(void *arg) {
     etatCommMoniteur = 0;
     rt_mutex_release(&mutexEtat);
 
+
+    rt_sem_v(&semCamera);
+
     while (var1 > 0) {
         rt_printf("tserver : Attente d'un message\n");
         var1 = serveur->receive(serveur, msg);
@@ -91,31 +94,33 @@ void communiquer(void *arg) {
                     move->from_message(move, msg);
                     move->print(move);
                     rt_mutex_release(&mutexMove);
-
-
                     break;
             }
         } else {
-			//REPRISE DE CONNEXION SI PERTE 
-			rt_printf("tserver : La communication a ete perdu  \n") ; 
-
-			//PASSAGE DE LA VALEUR DE etatCommMoniteur à 1 	si perte de connexion 		
-	    	rt_mutex_acquire(&mutexEtat, TM_INFINITE);
-    		etatCommMoniteur = 1;
-   			rt_mutex_release(&mutexEtat);
-
-			rt_printf("tserver : Tentative de reconnexion du superviseur\n");
-		    serveur->open(serveur, "8000");
-    		rt_printf("tserver : Connexion\n");
+	        rt_sem_p(&semDeplacerRobot,TM_INFINITE);
+	        rt_sem_p(&semWatchdog,TM_INFINITE);
+       		rt_sem_p(&semCamera,TM_INFINITE);
+        	rt_sem_p(&semCalibration,TM_INFINITE);
+        	rt_sem_p(&semCalculPosition,TM_INFINITE);
+			printf("Tous les threads du robots sont bloqués\n") ; 
+   			rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+		    etatCommMoniteur = 1;
+        	rt_mutex_release(&mutexEtat);
+			printf("Etat communication moniteur à 1\n") ; 
 			
-			//PASSAGE DE LA VALEUR DE etatCommMoniteur à 0 	si perte de connexion 		
-	    	rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+		    rt_printf("tserver : Début de l'exécution de serveur\n");
+    		serveur->open(serveur, "8000");
+    		rt_printf("tserver : Re-Connexion\n");
+
+    		rt_mutex_acquire(&mutexEtat, TM_INFINITE);
     		etatCommMoniteur = 0;
-   			rt_mutex_release(&mutexEtat);
-
-			//REPASSAGE DE VAR A 1 POUR REPASSER DANS LE WHILE 
+    		rt_mutex_release(&mutexEtat);
 			var1=1 ; 
-
+	        rt_sem_v(&semDeplacerRobot);
+	        rt_sem_v(&semWatchdog);
+       		rt_sem_v(&semCamera);
+        	rt_sem_v(&semCalibration);
+        	rt_sem_v(&semCalculPosition);
 		}
     }
 }
@@ -130,28 +135,32 @@ void deplacer(void *arg) {
 
     rt_printf("tmove : Debut de l'éxecution de periodique à 1s\n");
     rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+	
 
+	rt_sem_v(&semDeplacerRobot);
     while (1) {
-        if(compteurmessage>3){
+
+        if(compteurmessage>1000){
             rt_printf("Connexion lost due to too many lost messages");
             message = d_new_message();
             rt_mutex_acquire(&mutexEtat, TM_INFINITE);
-            etatCommRobot=STATUS_ERR_TIMEOUT;
-            /* On declare l'état du robot comme connexion perdue */
+            etatCommRobot=0;
             rt_mutex_release(&mutexEtat);
-            message->put_state(message, STATUS_ERR_TIMEOUT);
-            if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
-                    message->free(message);
-            }
-            else{
-            	rt_printf("Message of disconnexion not sent");
-            	break;
-            }
+            message->put_state(message, status);
             break;
         }
+
         /* Attente de l'activation périodique */
+
+		
+
         rt_task_wait_period(NULL);
         rt_printf("tmove : Activation périodique\n");
+
+
+
+		//Semaphore bloquant si connexion perdue 
+        rt_sem_p(&semDeplacerRobot,TM_INFINITE);
 
         rt_mutex_acquire(&mutexEtat, TM_INFINITE);
         status = etatCommRobot;
@@ -192,23 +201,22 @@ void deplacer(void *arg) {
 
                 message = d_new_message();
                 message->put_state(message, status);
-                
-                compteurmessage++;
-                rt_printf("Message lost ! %d messages lost", compteurmessage);
 
                 rt_printf("tmove : Envoi message\n");
                 if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
                     message->free(message);
+                    compteurmessage=0; //Message reçue donc remise à zéro du compteur de messages perdus
                 }
                 else{
-                    rt_printf("Sending error message lost !);
+                    compteurmessage++;
+                    rt_printf("Message lost ! %d messages lost", compteurmessage);
                 }
             }
-            else{ compteurmessage=0;} //Message reçue donc remise à zéro du compteur de messages perdus
         }
+
+        rt_sem_v(&semDeplacerRobot);
     }
 }
-
 
 int write_in_queue(RT_QUEUE *msgQueue, void * data, int size) {
     void *msg;
@@ -224,3 +232,111 @@ int write_in_queue(RT_QUEUE *msgQueue, void * data, int size) {
 
     return err;
 }
+
+
+
+
+
+
+void watchdog(void *arg){
+	rt_printf("twatchdog : Debut de l'éxecution de periodique à 250ms\n");
+    rt_task_set_periodic(NULL, TM_NOW, 250000000);
+    rt_sem_v(&semWatchdog);
+	while(1){
+		rt_printf("watchdog\n");
+		rt_task_wait_period(NULL);
+        rt_printf("twatchdog : Activation périodique\n");
+
+		//Semaphore bloquant si connexion perdue 
+        rt_sem_p(&semWatchdog,TM_INFINITE);
+
+        rt_sem_v(&semWatchdog);
+	}
+}
+
+void camera(void *arg){
+	int status = 1;
+	DMessage *message;
+    rt_sem_p(&semCamera,TM_INFINITE);
+	cam->open(cam); //connexion usb qui marche forcèment donc pas
+
+	rt_printf("tcamera : Debut de l'éxecution de periodique à 600ms\n");
+    rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+    rt_sem_v(&semCamera);
+    
+    rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+    status=etatCommMoniteur;
+    rt_mutex_release(&mutexEtat);
+    
+    if(status!=STATUS_OK){
+        printf("coucou\n") ; 
+    }
+    else{
+    
+        while(1){
+            rt_printf("Je suis dans la caméra\n");
+            rt_task_wait_period(NULL);
+            rt_printf("tmove : Activation périodique\n");
+
+            //Semaphore bloquant si connexion perdue
+            rt_sem_p(&semCamera,TM_INFINITE);
+        
+            rt_printf("tcamera : Ouverture de la communication avec le robot\n");
+            
+            //de nécessité de tester si ça a marché
+            
+            //faire le test de l'arène
+            
+            //recuperation de l'image
+            
+            cam->get_frame(cam,image);
+            jpegimage->compress(jpegimage,image);
+            
+            message = d_new_message();
+            d_message_put_jpeg_image(message, jpegimage);
+            
+            rt_printf("tcamera : Envoi jpeg image\n");
+            if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
+                message->free(message);
+            }
+
+            rt_sem_v(&semCamera);
+        }
+    }
+}
+
+void calibration(void *arg){
+	rt_printf("tcalibration : Debut de l'éxecution de periodique à 500ms\n");
+    rt_task_set_periodic(NULL, TM_NOW, 500000000);
+    rt_sem_v(&semCalibration);
+	while(1){
+		rt_printf("Je suis dans la calibration\n");
+		rt_task_wait_period(NULL);
+        rt_printf("tcalibration : Activation périodique\n");
+
+		//Semaphore bloquant si connexion perdue 
+        rt_sem_p(&semCalibration,TM_INFINITE);
+
+        rt_sem_v(&semCalibration);
+	}
+}
+
+void calculposition(void *arg){
+	rt_printf("tcalculposition : Debut de l'éxecution de periodique à 600ms\n");
+    rt_task_set_periodic(NULL, TM_NOW, 600000000);
+    rt_sem_v(&semCalculPosition);
+	while(1){
+		rt_printf("Je suis dans le calcul position\n");
+		rt_task_wait_period(NULL);
+        rt_printf("tcalculposition : Activation périodique\n");
+
+		//Semaphore bloquant si connexion perdue 
+        rt_sem_p(&semCalculPosition,TM_INFINITE);
+
+        rt_sem_v(&semCalculPosition);
+	}
+}
+
+
+
+
