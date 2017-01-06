@@ -149,7 +149,7 @@ void initStruct(void) {
     robot = d_new_robot();
     move = d_new_movement();
     serveur = d_new_server();
-
+    arena = d_new_arena();
 	cam = d_new_camera();
     image = d_new_image();
     jpegimage = d_new_jpegimage();

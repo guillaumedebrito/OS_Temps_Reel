@@ -24,6 +24,19 @@ RT_QUEUE queueMsgGUI;
 
 int etatCommMoniteur = 1;
 int etatCommRobot = 1;
+
+
+//########################## THOMAS #########################
+
+//permet de définir si l'arene doit être calibré, si elle est en attente d'acceptation, si elle est acceptée ou refusée
+#define ACTION_WAINTING_ARENA                    (6)
+int etatArene = ACTION_WAINTING_ARENA ;
+
+
+DArena *arena;
+
+//###########################################################
+
 DRobot *robot;
 DMovement *move;
 DServer *serveur;

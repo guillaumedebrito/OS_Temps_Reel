@@ -295,16 +295,18 @@ void camera(void *arg){
             message = d_new_message();
             d_message_put_jpeg_image(message, jpegimage);
             
-            rt_printf("tcamera : Envoi jpeg image\n");
+            rt_printf("Arena_calibration : Envoi de l'image de l'arene au moniteur\n");
             if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
                 message->free(message);
             }
-
             rt_sem_v(&semCamera);
         }
     }
 }
 
+
+
+int
 void calibration(void *arg){
 	rt_printf("tcalibration : Debut de l'éxecution de periodique à 500ms\n");
     rt_task_set_periodic(NULL, TM_NOW, 500000000);
@@ -313,10 +315,49 @@ void calibration(void *arg){
 		rt_printf("Je suis dans la calibration\n");
 		rt_task_wait_period(NULL);
         rt_printf("tcalibration : Activation périodique\n");
-
 		//Semaphore bloquant si connexion perdue 
         rt_sem_p(&semCalibration,TM_INFINITE);
-
+        
+        //########################## THOMAS ########################
+        
+        //tant qu'on a pas demandé à chercher l'arène on ne fait rien
+        while (etatArene!=ACTION_FIND_ARENA){}
+        //tant qu'on demande à chercher l'arène on la chercher
+        while(etatArene==ACTION_FIND_ARENA){
+            //on crée un image de l'arène
+            DImage * img_arena=d_new_image();
+            cam->get_frame(img_arena);
+            
+            //on crée une arène à partir de cette image
+            DArena * new_arena=d_new_arena();
+            new_arena=img_arena->compute_arena_position();
+            
+            //on dessine l'arene sur l'image de l'arène (ou on doit creer une autre image ?)
+            d_imageshop_draw_arena(img_arena,new_arena);
+            
+            //on convertis l'image en jpeg
+            DJpegimage* img_arena_jpeg=d_new_jpegimage();
+            img_arena_jpeg->compress(img_arena);
+            img_arena->free();
+            
+            //on envoie l'image jpeg de l'arene au moniteur
+            DMessage* message_img_arena=d_new_message();
+            message_img_arena->put_jpeg_image(img_arena_jpeg);
+            img_arena_jpeg->free();
+            
+            //on met l'arene en etat d'attente d'acceptation et on attend
+            etatArene = ACTION_WAINTING_ARENA ;
+            while(etatArene == ACTION_WAINTING_ARENA){}
+        }
+        
+        //si l'utilisateur accepte la nouvelle arene elle devient officielement l'arene
+        if (etatArene==ACTION_ARENA_IS_FOUND){
+            arena=new_arena;
+            new_arena->free();
+        }
+        else if (etatArene==ACTION_ARENA_FAILED){
+            new_arena->free();
+        }
         rt_sem_v(&semCalibration);
 	}
 }
