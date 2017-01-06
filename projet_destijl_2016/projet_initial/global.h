@@ -41,6 +41,13 @@ extern DServer *serveur;
 extern DRobot *robot;
 extern DMovement *move;
 
+//################### THOMAS ################################
+#define ACTION_WAINTING_ARENA                    (6)
+extern int etatArene;
+extern DArena *arena;
+extern RT_SEM semLaunchCalculPosition;
+//##########################################
+
 extern DCamera *cam;
 extern DImage *image;
 extern DJpegimage *jpegimage;

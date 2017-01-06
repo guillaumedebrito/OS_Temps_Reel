@@ -98,6 +98,14 @@ void communiquer(void *arg) {
                             rt_printf("tserver : Action d'acceptation de l'arene\n");
                             etatArene = ACTION_ARENA_IS_FOUND ;
                             break;
+                        case ACTION_COMPUTE_CONTINUOUSLY_POSITION :
+                            rt_printf("tserver : Calcul de position du robot en continue\n");
+                            rt_sem_v(&semCalculPosition);
+                            break;
+                        case ACTION_STOP_COMPUTE_POSITION:
+                            rt_printf("tserver : Arret du calcul de position du robot en continue\n");
+                            rt_sem_p(&semCalibration,TM_INFINITE);
+                            break;
                             //################################################################
                     }
                     break;
