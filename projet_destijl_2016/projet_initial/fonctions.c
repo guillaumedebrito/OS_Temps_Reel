@@ -433,7 +433,7 @@ void calculposition(void *arg){
         new_position->free();
         rt_printf("Calcul position : Envoi de l'image de l'arene au moniteur avec la position\n");
         if (write_in_queue(&queueMsgGUI, message_img_position, sizeof (DMessage)) < 0) {
-            message_img_position->free(memessage_img_positionssage);
+            message_img_position->free(memessage_img_position);
         }
         rt_printf("Calcul position : Envoi de la position du robot au moniteur\n");
         if (write_in_queue(&queueMsgGUI, message_position, sizeof (DMessage)) < 0) {
